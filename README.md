@@ -1,3 +1,27 @@
+Ng8Articles
+==========================================
+
+About Us
+
+This is an Angular Demo application.
+
+Demonstrates CRUD on Articles, Contacts, Contact Groups, and Users.
+
+Demonstrates Angular Material Navigation, Tables, Sorting, Filtering, Dialogs.
+
+Demonstrates Server Side Paging, Sorting and Search/Filter.
+
+Demonstrates Master Detail handling.
+
+Demonstrates Routing.
+
+Demonstrates Security.
+
+(https://www.zdslogic.com/contacts).
+
+==========================================
+
+
 # Ng8Articles
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 8.0.3.
