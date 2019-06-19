@@ -20,7 +20,8 @@ Demonstrates Security.
 (https://www.zdslogic.com/articles).
 
 ==========================================
-
+See https://github.com/gothinkster/angular-realworld-example-app
+==========================================
 
 # Ng8Articles
 
