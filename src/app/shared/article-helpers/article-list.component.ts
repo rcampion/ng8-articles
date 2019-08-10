@@ -1,12 +1,16 @@
-import { Component, Input } from '@angular/core';
+import { Component, ViewChild, Input } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
 import { Article, ArticleListConfig, ArticlesService } from '../../core';
 import { environment } from './../../../environments/environment';
-import { PaginationPage, PaginationPropertySort } from '../../core/interface/pagination';
+import { PaginationPropertySort } from '../../core/interface/pagination';
 import { BehaviorSubject } from 'rxjs';
 import { finalize } from 'rxjs/operators';
 import { ErrorHandlerService } from '../../core/services/error-handler.service';
+
+import { ArticlesDataSource } from '../../core/services/articles.datasource';
+
+import { MatPaginator } from '@angular/material';
 
 @Component({
     selector: 'app-article-list',
@@ -14,6 +18,8 @@ import { ErrorHandlerService } from '../../core/services/error-handler.service';
     templateUrl: './article-list.component.html'
 })
 export class ArticleListComponent {
+    dataSource: ArticlesDataSource;
+    @ViewChild(MatPaginator, {static:false}) paginator: MatPaginator;
 
     private articlesSubject = new BehaviorSubject<Article[]>([]);
 

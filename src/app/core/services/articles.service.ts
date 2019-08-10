@@ -9,7 +9,7 @@ import { Observable, of } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
 import { Article, ArticleListConfig } from '../../core';
 import { environment } from './../../../environments/environment';
-import { PaginationPage, PaginationPropertySort } from '../interface/pagination';
+import { PaginationPropertySort } from '../interface/pagination';
 
 
 @Injectable()

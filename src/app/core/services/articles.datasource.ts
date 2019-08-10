@@ -1,8 +1,8 @@
 
 import { CollectionViewer, DataSource } from '@angular/cdk/collections';
 import { Observable } from 'rxjs';
-import { Contact } from '../interface/contact.model';
-import { ContactsService } from './contacts.service';
+import { Article } from '../models/article.model';
+import { ArticlesService } from './articles.service';
 import { BehaviorSubject } from 'rxjs';
 import { catchError, finalize } from 'rxjs/operators';
 import { of } from 'rxjs';
@@ -10,9 +10,9 @@ import { map } from 'rxjs/operators';
 import { PaginationPropertySort } from '../interface/pagination';
 import { ErrorHandlerService } from './error-handler.service';
 
-export class ContactsDataSource implements DataSource<Contact> {
+export class ArticlesDataSource implements DataSource<Article> {
 
-    private contactsSubject = new BehaviorSubject<Contact[]>([]);
+    private articlesSubject = new BehaviorSubject<Article[]>([]);
 
     private loadingSubject = new BehaviorSubject<boolean>(false);
 
@@ -20,12 +20,12 @@ export class ContactsDataSource implements DataSource<Contact> {
 
     public total = 0;
 
-    constructor(private contactsService: ContactsService,
+    constructor(private articlesService: ArticlesService,
         private errorService: ErrorHandlerService) {
 
     }
 
-    loadContacts(
+    loadArticles(
         filter: string,
         sortProperty: string,
         sortDirection: string,
@@ -38,13 +38,13 @@ export class ContactsDataSource implements DataSource<Contact> {
         sort.property = sortProperty;
         sort.direction = sortDirection;
 
-        this.contactsService.findContactsWithSortAndFilter(filter, sort,
+        this.articlesService.findArticlesWithSortAndFilter(filter, sort,
             pageIndex, pageSize).pipe(
                 catchError(() => of([])),
                 finalize(() => this.loadingSubject.next(false))
             )
             .subscribe(response => {
-                this.contactsSubject.next(response.content);
+                this.articlesSubject.next(response.content);
                 this.total = response.totalElements;
             },
                 error => {
@@ -54,13 +54,13 @@ export class ContactsDataSource implements DataSource<Contact> {
             );
     }
 
-    connect(collectionViewer: CollectionViewer): Observable<Contact[]> {
+    connect(collectionViewer: CollectionViewer): Observable<Article[]> {
         console.log('Connecting data source');
-        return this.contactsSubject.asObservable();
+        return this.articlesSubject.asObservable();
     }
 
     disconnect(collectionViewer: CollectionViewer): void {
-        this.contactsSubject.complete();
+        this.articlesSubject.complete();
         this.loadingSubject.complete();
     }
 

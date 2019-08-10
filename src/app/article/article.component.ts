@@ -1,10 +1,14 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ViewChild, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { User } from '../core/models/user';
 
 import { UsersService } from '../core/services/users.service';
+
+import { ArticlesDataSource } from '../core/services/articles.datasource';
+
+import { ErrorHandlerService } from '../core/services/error-handler.service';
 
 import {
   Article,
@@ -18,7 +22,7 @@ import {
   templateUrl: './article.component.html'
 })
 export class ArticleComponent implements OnInit {
-  article: Article;
+ article: Article;
   currentUser: User;
   canModify: boolean;
   comments: Comment[];
@@ -27,15 +31,17 @@ export class ArticleComponent implements OnInit {
   isSubmitting = false;
   isDeleting = false;
 
-  constructor(
+  constructor( 
     private route: ActivatedRoute,
     private articlesService: ArticlesService,
     private commentsService: CommentsService,
     private router: Router,
-    private userService: UsersService,
+	private userService: UsersService,
+	private errorService: ErrorHandlerService,
   ) { }
 
   ngOnInit() {
+
     // Retreive the prefetched article
     this.route.data.subscribe(
       (data: { article: Article }) => {
