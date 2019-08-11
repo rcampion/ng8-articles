@@ -18,12 +18,18 @@ export class ArticlesDataSource implements DataSource<Article> {
 
     public loading$ = this.loadingSubject.asObservable();
 
+	articles: Article[];
+		
     public total = 0;
 
     constructor(private articlesService: ArticlesService,
         private errorService: ErrorHandlerService) {
 
     }
+
+	getArticles(){
+		return this.articles;
+	}
 
     loadArticles(
         filter: string,
@@ -41,10 +47,12 @@ export class ArticlesDataSource implements DataSource<Article> {
         this.articlesService.findArticlesWithSortAndFilter(filter, sort,
             pageIndex, pageSize).pipe(
                 catchError(() => of([])),
-                finalize(() => this.loadingSubject.next(false))
+                finalize(() =>
+					this.loadingSubject.next(false))
             )
             .subscribe(response => {
-                this.articlesSubject.next(response.content);
+				this.articlesSubject.next(response.content);
+				this.articles = response.content;
                 this.total = response.totalElements;
             },
                 error => {

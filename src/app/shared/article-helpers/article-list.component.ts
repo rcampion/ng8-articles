@@ -1,110 +1,156 @@
-import { Component, ViewChild, Input } from '@angular/core';
-import { Observable, of } from 'rxjs';
-import { map, catchError } from 'rxjs/operators';
-import { Article, ArticleListConfig, ArticlesService } from '../../core';
-import { environment } from './../../../environments/environment';
-import { PaginationPropertySort } from '../../core/interface/pagination';
-import { BehaviorSubject } from 'rxjs';
-import { finalize } from 'rxjs/operators';
-import { ErrorHandlerService } from '../../core/services/error-handler.service';
-
+import { Component, OnInit, AfterViewInit, ViewChild, ElementRef, ChangeDetectorRef, Input } from '@angular/core';
+import { MatTableDataSource, MatSort, MatPaginator } from '@angular/material';
+import { MatDialog, MatDialogRef } from '@angular/material';
+import { Article } from '../../core/models/article.model';
 import { ArticlesDataSource } from '../../core/services/articles.datasource';
+import { ArticlesService } from '../../core/services/articles.service';
 
-import { MatPaginator } from '@angular/material';
+import { ArticleListConfig } from '../../core';
+
+import { PaginationPage, PaginationPropertySort } from '../../core/interface/pagination';
+import { ErrorHandlerService } from '../../core/services/error-handler.service';
+import { Router } from '@angular/router';
+
+import { defaultItemsCountPerPage } from './../../common/constants';
+import { HttpEvent, HttpEventType } from '@angular/common/http';
+import { debounceTime, distinctUntilChanged, startWith, tap, delay } from 'rxjs/operators';
+import { merge } from 'rxjs';
+import { fromEvent } from 'rxjs';
 
 @Component({
-    selector: 'app-article-list',
-    styleUrls: ['article-list.component.css'],
-    templateUrl: './article-list.component.html'
+	selector: 'app-article-list',
+	styleUrls: ['article-list.component.css'],
+	templateUrl: './article-list.component.html'
 })
-export class ArticleListComponent {
-    dataSource: ArticlesDataSource;
-    @ViewChild(MatPaginator, {static:false}) paginator: MatPaginator;
+export class ArticleListComponent implements OnInit, AfterViewInit {
 
-    private articlesSubject = new BehaviorSubject<Article[]>([]);
+	// public displayedColumns = ['firstName', 'lastName', 'company', 'details', 'update', 'delete'];
+	// public dataSource = new MatTableDataSource<Contact>();
+	dataSource: ArticlesDataSource;
 
-    private loadingSubject = new BehaviorSubject<boolean>(false);
+	@ViewChild(MatSort, { static: false }) sort: MatSort;
+	@ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
+	@ViewChild('input', { static: false }) input: ElementRef;
 
-    public total = 0;
+	@Input() limit: number;
+	@Input()
+	set config(config: ArticleListConfig) {
+		if (config) {
+			//           this.query = config;
+			//           this.currentPage = 1;
+			//           this.runQuery();
+		}
+	}
 
-    constructor(
-        private articlesService: ArticlesService,
-        private errorHandlerService: ErrorHandlerService
-    ) { }
+	currentArticle: Article;
 
-    @Input() limit: number;
-    @Input()
-    set config(config: ArticleListConfig) {
-        if (config) {
-            this.query = config;
-            this.currentPage = 1;
-            this.runQuery();
-        }
-    }
+	articles: Article[];
 
-    query: ArticleListConfig;
-    results: Article[];
-    loading = false;
-    currentPage = 1;
-    totalPages: Array<number> = [1];
+	articlesLength = 0;
 
-    setPageTo(pageNumber) {
-        this.currentPage = pageNumber;
-        this.runQuery();
-    }
+	sortProperty = '';
 
-    runQuery() {
-        this.loading = true;
-        this.results = [];
+	private dialogConfig;
 
-        // Create limit and offset filter (if necessary)
-        if (this.limit) {
-            this.query.filters.limit = this.limit;
-            this.query.filters.offset = (this.limit * (this.currentPage - 1));
-        }
+	// deleteContactDialogRef: MatDialogRef<ContactDeleteDialogComponent>;
 
-        this.articlesService.query(this.query)
-            .subscribe(data => {
-                this.loading = false;
-                this.results = data.articles;
+	pageNumber: number;
 
-                // Used from http://www.jstips.co/en/create-range-0...n-easily-using-one-line/
-                this.totalPages = Array.from(new Array(Math.ceil(data.articlesCount / this.limit)), (val, index) => index + 1);
-            },
-                error => {
-                    // this.errorService.dialogConfig = { ...this.dialogConfig };
-                    this.errorHandlerService.handleTextError(error);
-                }
-            );
-    }
+	page: PaginationPage<any>;
 
-    loadArticles(
-        filter: string,
-        sortProperty: string,
-        sortDirection: string,
-        pageIndex: number,
-        pageSize: number) {
 
-        this.loadingSubject.next(true);
+	// tslint:disable-next-line:max-line-length
+	constructor(private repository: ArticlesService, private errorService: ErrorHandlerService, private router: Router, private dialog: MatDialog, private changeDetectorRefs: ChangeDetectorRef) { }
+	ngOnInit() {
 
-        const sort = new PaginationPropertySort();
-        sort.property = sortProperty;
-        sort.direction = sortDirection;
+		this.dataSource = new ArticlesDataSource(this.repository, this.errorService);
 
-        this.articlesService.findArticlesWithSortAndFilter(filter, sort,
-            pageIndex, pageSize).pipe(
-                catchError(() => of([])),
-                finalize(() => this.loadingSubject.next(false))
-            )
-            .subscribe(response => {
-                this.articlesSubject.next(response.content);
-                this.total = response.totalElements;
-            },
-                error => {
-                    // this.errorService.dialogConfig = { ...this.dialogConfig };
-                    this.errorHandlerService.handleError(error);
-                }
-            );
-    }
+		this.dataSource.loadArticles('', '', 'asc', 0, 6);
+
+		this.repository.getArticles()
+			.subscribe((data) => this.setArticles(data));
+
+		this.dialogConfig = {
+			height: '200px',
+			width: '400px',
+			disableClose: true,
+			data: {}
+		};
+	}
+
+	ngAfterViewInit() {
+		/*
+				this.sort.sortChange.subscribe((event) => {
+					this.paginator.pageIndex = 0;
+					this.sortProperty = event.active;
+				});
+		
+				fromEvent(this.input.nativeElement, 'keyup')
+					.pipe(
+						debounceTime(150),
+						distinctUntilChanged(),
+						tap(() => {
+							this.paginator.pageIndex = 0;
+		
+							this.loadArticlesPage();
+						})
+					)
+					.subscribe();
+		
+				merge(this.sort.sortChange, this.paginator.page)
+					.pipe(
+						tap(() => this.loadArticlesPage())
+					)
+					.subscribe(
+		
+						data => {
+							console.log(data);
+						}
+		
+					);
+		*/
+//		this.repository.getArticles()
+//			.subscribe((data) => this.setArticles(data));
+	}
+
+	setArticles(data) {
+		this.articles = data;
+	}
+
+	public redirectToAdd = () => {
+		const url = `/article/create`;
+		this.router.navigate([url]);
+	}
+
+	public redirectToDetails = (id: string) => {
+		const url = `/article/details/${id}`;
+		this.router.navigate([url]);
+	}
+
+	public redirectToUpdate = (id: string) => {
+		const url = `/article/update/${id}`;
+		this.router.navigate([url]);
+	}
+	/*
+		public redirectToDelete = (id: string) => {
+			this.dialogConfig.data = {
+				id: id
+			};
+			const dialogRef = this.dialog.open(ContactDeleteDialogComponent, this.dialogConfig)
+				.afterClosed().subscribe(result => {
+					this.loadContactsPage();
+				});
+		}
+	*/
+	loadArticlesPage() {
+		this.dataSource.loadArticles(
+
+			this.input.nativeElement.value,
+			this.sortProperty,
+			this.sort.direction,
+			this.paginator.pageIndex,
+			this.paginator.pageSize);
+
+	}
 
 }
