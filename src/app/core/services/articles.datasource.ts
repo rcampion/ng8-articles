@@ -32,7 +32,7 @@ export class ArticlesDataSource implements DataSource<Article> {
 	}
 
     loadArticles(
-        filter: string,
+        //filter: string,
         sortProperty: string,
         sortDirection: string,
         pageIndex: number,
@@ -43,6 +43,7 @@ export class ArticlesDataSource implements DataSource<Article> {
         const sort = new PaginationPropertySort();
         sort.property = sortProperty;
         sort.direction = sortDirection;
+		const filter: string = '';
 
         this.articlesService.findArticlesWithSortAndFilter(filter, sort,
             pageIndex, pageSize).pipe(

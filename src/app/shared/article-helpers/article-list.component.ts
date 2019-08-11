@@ -24,7 +24,7 @@ import { fromEvent } from 'rxjs';
 })
 export class ArticleListComponent implements OnInit, AfterViewInit {
 
-	// public displayedColumns = ['firstName', 'lastName', 'company', 'details', 'update', 'delete'];
+	public displayedColumns = ['title'];
 	// public dataSource = new MatTableDataSource<Contact>();
 	dataSource: ArticlesDataSource;
 
@@ -65,7 +65,7 @@ export class ArticleListComponent implements OnInit, AfterViewInit {
 
 		this.dataSource = new ArticlesDataSource(this.repository, this.errorService);
 
-		this.dataSource.loadArticles('', '', 'asc', 0, 6);
+		this.dataSource.loadArticles('', 'asc', 0, 6);
 
 		this.repository.getArticles()
 			.subscribe((data) => this.setArticles(data));
@@ -79,38 +79,38 @@ export class ArticleListComponent implements OnInit, AfterViewInit {
 	}
 
 	ngAfterViewInit() {
-		/*
-				this.sort.sortChange.subscribe((event) => {
+
+		this.sort.sortChange.subscribe((event) => {
+			this.paginator.pageIndex = 0;
+			this.sortProperty = event.active;
+		});
+/*
+		fromEvent(this.input.nativeElement, 'keyup')
+			.pipe(
+				debounceTime(150),
+				distinctUntilChanged(),
+				tap(() => {
 					this.paginator.pageIndex = 0;
-					this.sortProperty = event.active;
-				});
-		
-				fromEvent(this.input.nativeElement, 'keyup')
-					.pipe(
-						debounceTime(150),
-						distinctUntilChanged(),
-						tap(() => {
-							this.paginator.pageIndex = 0;
-		
-							this.loadArticlesPage();
-						})
-					)
-					.subscribe();
-		
-				merge(this.sort.sortChange, this.paginator.page)
-					.pipe(
-						tap(() => this.loadArticlesPage())
-					)
-					.subscribe(
-		
-						data => {
-							console.log(data);
-						}
-		
-					);
-		*/
-//		this.repository.getArticles()
-//			.subscribe((data) => this.setArticles(data));
+
+					this.loadArticlesPage();
+				})
+			)
+			.subscribe();
+*/
+		merge(this.sort.sortChange, this.paginator.page)
+			.pipe(
+				tap(() => this.loadArticlesPage())
+			)
+			.subscribe(
+
+				data => {
+					console.log(data);
+				}
+
+			);
+
+		//		this.repository.getArticles()
+		//			.subscribe((data) => this.setArticles(data));
 	}
 
 	setArticles(data) {
@@ -145,7 +145,7 @@ export class ArticleListComponent implements OnInit, AfterViewInit {
 	loadArticlesPage() {
 		this.dataSource.loadArticles(
 
-			this.input.nativeElement.value,
+			//this.input.nativeElement.value,
 			this.sortProperty,
 			this.sort.direction,
 			this.paginator.pageIndex,

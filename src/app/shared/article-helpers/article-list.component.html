@@ -1,3 +1,20 @@
+<!--
+  <mat-form-field fxFlex="20%">
+
+    <input matInput placeholder="Search articles" #input>
+
+  </mat-form-field>
+-->
+<table mat-table [dataSource]="dataSource" matSort>
+
+  <ng-container matColumnDef="title" app-article-preview>
+    <th mat-header-cell *matHeaderCellDef mat-sort-header> Article </th>
+	<td mat-cell *matCellDef="let element"> {{element.title}} </td>
+	[article]="article">
+  </ng-container>
+
+<!--
+
 <app-article-preview
   *ngFor="let article of articles"
   [article]="article">
@@ -11,7 +28,7 @@
 <div class="app-article-preview"
   [hidden]="loading">
 </div>
-
+-->
 <!-- <nav [hidden]="loading || totalPages.length <= 1"> -->
 <!--
 	<nav [hidden]="loading">
@@ -29,6 +46,8 @@
   </ul>
 </nav>
 -->
-
+  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+  <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+</table>
 <mat-paginator [length]="dataSource.total" [pageSize]="6" [pageSizeOptions]="[2, 4, 6, 10, 20]">
 </mat-paginator>
