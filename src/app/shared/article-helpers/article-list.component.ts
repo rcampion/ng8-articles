@@ -24,7 +24,7 @@ import { fromEvent } from 'rxjs';
 })
 export class ArticleListComponent implements OnInit, AfterViewInit {
 
-	public displayedColumns = ['title'];
+	public displayedColumns = ['title', 'details'];
 	// public dataSource = new MatTableDataSource<Contact>();
 	dataSource: ArticlesDataSource;
 
@@ -123,7 +123,7 @@ export class ArticleListComponent implements OnInit, AfterViewInit {
 	}
 
 	public redirectToDetails = (id: string) => {
-		const url = `/article/details/${id}`;
+		const url = `/article/${id}`;
 		this.router.navigate([url]);
 	}
 

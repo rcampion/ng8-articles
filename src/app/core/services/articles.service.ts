@@ -86,7 +86,10 @@ export class ArticlesService {
 	}
 
 	deleteTag(tag, id): Observable<Article> {
-		return this.apiService.delete('/tags/' + tag + '/' + id);
+		if(tag!='')
+			return this.apiService.delete('/tags/' + tag + '/' + id);
+		else
+			return this.apiService.delete('/tags/' + id);
 	}
 
 	findArticlesWithSortAndFilter(

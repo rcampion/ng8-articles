@@ -46,7 +46,8 @@ export class ApiService {
 
     delete(path): Observable<any> {
         return this.http.delete(
-            `${environment.api_url}${path}`
+			`${environment.api_url}${path}`, this.generateHeaders()
+			
         ).pipe(catchError(this.formatErrors));
     }
 
@@ -55,7 +56,10 @@ export class ApiService {
 
             headers: new HttpHeaders(
                 {
-                    'Content-Type': 'application/json',
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+				'Access-Control-Allow-Credentials': 'true',
+				'Access-Control-Allow-Origin': 'true'
                 })
         };
     }
