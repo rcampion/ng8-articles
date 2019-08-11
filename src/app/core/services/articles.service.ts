@@ -95,7 +95,7 @@ export class ArticlesService {
 	findArticlesWithSortAndFilter(
 
 		filter = '', sort: PaginationPropertySort,
-		pageNumber = 0, pageSize = 3): Observable<any> {
+		pageNumber = 0, pageSize = 3, config:ArticleListConfig): Observable<any> {
 		let apiUrl = this.createCompleteRoute('articles', environment.api_url);
 		const paramsx: any = { page: pageNumber, size: pageSize };
 		if (sort != null) {
@@ -114,18 +114,24 @@ export class ArticlesService {
 			// search = 'lastName==' + filter + '*';
 			search = 'firstName==' + filter + '* or ' + 'lastName==' + filter + '* or ' + 'company==' + filter + '*';
 		}
-		return this.http.get(apiUrl, {
-			params: new HttpParams()
+		
+		let test = config.toString();
 
-				.set('search', search)
+		const paramsy = {};
 
-				.set('sort', sortTest)
+		Object.keys(config.filters)
+			.forEach((key) => {
+				paramsy[key] = config.filters[key];
+			});
 
-				.set('page', pageNumber.toString())
-				.set('size', pageSize.toString())
-		})
+		let params = new HttpParams( {fromObject: paramsy} );
 
+		params = params.set('search', search);
+		params = params.set('sort', sortTest);
+		params = params.set('page', pageNumber.toString());
+		params = params.set('size', pageSize.toString());
 
+		return this.http.get(apiUrl, { params })
 
 			.pipe(
 				// map(res => res['content']

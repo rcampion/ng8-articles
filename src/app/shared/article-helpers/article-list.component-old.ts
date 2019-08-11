@@ -80,33 +80,6 @@ export class ArticleListComponent implements OnInit, AfterViewInit {
             );
     }
 
-    loadArticles(
-        filter: string,
-        sortProperty: string,
-        sortDirection: string,
-        pageIndex: number,
-        pageSize: number) {
 
-        this.loadingSubject.next(true);
-
-        const sort = new PaginationPropertySort();
-        sort.property = sortProperty;
-        sort.direction = sortDirection;
-
-        this.articlesService.findArticlesWithSortAndFilter(filter, sort,
-            pageIndex, pageSize).pipe(
-                catchError(() => of([])),
-                finalize(() => this.loadingSubject.next(false))
-            )
-            .subscribe(response => {
-                this.articlesSubject.next(response.content);
-                this.total = response.totalElements;
-            },
-                error => {
-                    // this.errorService.dialogConfig = { ...this.dialogConfig };
-                    this.errorHandlerService.handleError(error);
-                }
-            );
-    }
 
 }

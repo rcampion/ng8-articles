@@ -2,6 +2,7 @@
 import { CollectionViewer, DataSource } from '@angular/cdk/collections';
 import { Observable } from 'rxjs';
 import { Article } from '../models/article.model';
+import { ArticleListConfig } from '../../core';
 import { ArticlesService } from './articles.service';
 import { BehaviorSubject } from 'rxjs';
 import { catchError, finalize } from 'rxjs/operators';
@@ -36,7 +37,8 @@ export class ArticlesDataSource implements DataSource<Article> {
         sortProperty: string,
         sortDirection: string,
         pageIndex: number,
-        pageSize: number) {
+		pageSize: number,
+		config:ArticleListConfig) {
 
         this.loadingSubject.next(true);
 
@@ -46,8 +48,8 @@ export class ArticlesDataSource implements DataSource<Article> {
 		const filter: string = '';
 
         this.articlesService.findArticlesWithSortAndFilter(filter, sort,
-            pageIndex, pageSize).pipe(
-                catchError(() => of([])),
+            pageIndex, pageSize, config).pipe(
+                catchError((error) => of(this.errorService.handleError(error))),
                 finalize(() =>
 					this.loadingSubject.next(false))
             )

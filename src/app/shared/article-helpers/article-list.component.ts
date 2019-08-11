@@ -24,22 +24,37 @@ import { fromEvent } from 'rxjs';
 })
 export class ArticleListComponent implements OnInit, AfterViewInit {
 
-	public displayedColumns = ['title', 'details'];
+	public displayedColumns = ['title', 'author', 'details'];
 	// public dataSource = new MatTableDataSource<Contact>();
 	dataSource: ArticlesDataSource;
 
+	query: ArticleListConfig;
+    results: Article[];
+    loading = false;
+    currentPage = 1;
+    totalPages: Array<number> = [1];
+/*
+    setPageTo(pageNumber) {
+        this.currentPage = pageNumber;
+        this.loadArticlesPage();
+	}
+*/	
 	@ViewChild(MatSort, { static: false }) sort: MatSort;
 	@ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
 	@ViewChild('input', { static: false }) input: ElementRef;
 
 	@Input() limit: number;
+	
 	@Input()
 	set config(config: ArticleListConfig) {
+
+		
 		if (config) {
-			//           this.query = config;
-			//           this.currentPage = 1;
-			//           this.runQuery();
+			           this.query = config;
+			           //this.currentPage = 1;
+			           //this.loadArticlesPage();
 		}
+
 	}
 
 	currentArticle: Article;
@@ -65,7 +80,7 @@ export class ArticleListComponent implements OnInit, AfterViewInit {
 
 		this.dataSource = new ArticlesDataSource(this.repository, this.errorService);
 
-		this.dataSource.loadArticles('', 'asc', 0, 6);
+		this.dataSource.loadArticles('', 'asc', 0, 6,this.query);
 
 		this.repository.getArticles()
 			.subscribe((data) => this.setArticles(data));
@@ -149,7 +164,8 @@ export class ArticleListComponent implements OnInit, AfterViewInit {
 			this.sortProperty,
 			this.sort.direction,
 			this.paginator.pageIndex,
-			this.paginator.pageSize);
+			this.paginator.pageSize,
+			this.query);
 
 	}
 

@@ -59,7 +59,7 @@ export class ApiService {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json',
 				'Access-Control-Allow-Credentials': 'true',
-				'Access-Control-Allow-Origin': 'true'
+				'Access-Control-Allow-Origin': '*'
                 })
         };
     }
