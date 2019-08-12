@@ -96,7 +96,8 @@ export class ArticlesService {
 
 		filter = '', sort: PaginationPropertySort,
 		pageNumber = 0, pageSize = 3, config:ArticleListConfig): Observable<any> {
-		let apiUrl = this.createCompleteRoute('articles', environment.api_url);
+		//let apiUrl = this.createCompleteRoute('articles', environment.api_url);
+		let apiUrl = this.createCompleteRoute('articles' + ((config.type === 'feed') ? '/feed' : ''), environment.api_url);
 		const paramsx: any = { page: pageNumber, size: pageSize };
 		if (sort != null) {
 			paramsx.sort = sort.property + ',' + sort.direction;

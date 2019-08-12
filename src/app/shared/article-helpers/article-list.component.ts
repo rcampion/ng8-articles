@@ -52,7 +52,7 @@ export class ArticleListComponent implements OnInit, AfterViewInit {
 		if (config) {
 			           this.query = config;
 			           //this.currentPage = 1;
-			           //this.loadArticlesPage();
+			           this.loadArticlesPage();
 		}
 
 	}
@@ -158,7 +158,8 @@ export class ArticleListComponent implements OnInit, AfterViewInit {
 		}
 	*/
 	loadArticlesPage() {
-		this.dataSource.loadArticles(
+		if(this.dataSource) {
+			this.dataSource.loadArticles(
 
 			//this.input.nativeElement.value,
 			this.sortProperty,
@@ -166,7 +167,7 @@ export class ArticleListComponent implements OnInit, AfterViewInit {
 			this.paginator.pageIndex,
 			this.paginator.pageSize,
 			this.query);
-
+		}
 	}
 
 }
