@@ -24,7 +24,7 @@ import { fromEvent } from 'rxjs';
 })
 export class ArticleListComponent implements OnInit, AfterViewInit {
 
-	public displayedColumns = ['title', 'author', 'details'];
+	public displayedColumns = ['title', 'description', 'author', 'details'];
 
 	dataSource: ArticlesDataSource;
 
