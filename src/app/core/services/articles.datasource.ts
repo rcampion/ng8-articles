@@ -7,7 +7,6 @@ import { ArticlesService } from './articles.service';
 import { BehaviorSubject } from 'rxjs';
 import { catchError, finalize } from 'rxjs/operators';
 import { of } from 'rxjs';
-import { map } from 'rxjs/operators';
 import { PaginationPropertySort } from '../interface/pagination';
 import { ErrorHandlerService } from './error-handler.service';
 
@@ -19,8 +18,8 @@ export class ArticlesDataSource implements DataSource<Article> {
 
     public loading$ = this.loadingSubject.asObservable();
 
-	articles: Article[];
-		
+    articles: Article[];
+
     public total = 0;
 
     constructor(private articlesService: ArticlesService,
@@ -28,24 +27,24 @@ export class ArticlesDataSource implements DataSource<Article> {
 
     }
 
-	getArticles(){
+    getArticles(){
 		return this.articles;
-	}
+    }
 
     loadArticles(
-        //filter: string,
+        // filter: string,
         sortProperty: string,
         sortDirection: string,
         pageIndex: number,
-		pageSize: number,
-		config:ArticleListConfig) {
+        pageSize: number,
+        config:ArticleListConfig) {
 
         this.loadingSubject.next(true);
 
         const sort = new PaginationPropertySort();
         sort.property = sortProperty;
         sort.direction = sortDirection;
-		const filter: string = '';
+        const filter: string = '';
 
         this.articlesService.findArticlesWithSortAndFilter(filter, sort,
             pageIndex, pageSize, config).pipe(

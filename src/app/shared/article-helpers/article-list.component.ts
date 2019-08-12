@@ -25,7 +25,7 @@ import { fromEvent } from 'rxjs';
 export class ArticleListComponent implements OnInit, AfterViewInit {
 
 	public displayedColumns = ['title', 'author', 'details'];
-	// public dataSource = new MatTableDataSource<Contact>();
+
 	dataSource: ArticlesDataSource;
 
 	query: ArticleListConfig;
@@ -33,12 +33,7 @@ export class ArticleListComponent implements OnInit, AfterViewInit {
     loading = false;
     currentPage = 1;
     totalPages: Array<number> = [1];
-/*
-    setPageTo(pageNumber) {
-        this.currentPage = pageNumber;
-        this.loadArticlesPage();
-	}
-*/	
+
 	@ViewChild(MatSort, { static: false }) sort: MatSort;
 	@ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
 	@ViewChild('input', { static: false }) input: ElementRef;
