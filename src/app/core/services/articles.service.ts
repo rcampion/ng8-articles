@@ -97,7 +97,14 @@ export class ArticlesService {
 		filter = '', sort: PaginationPropertySort,
 		pageNumber = 0, pageSize = 3, config:ArticleListConfig): Observable<any> {
 		//let apiUrl = this.createCompleteRoute('articles', environment.api_url);
-		let apiUrl = this.createCompleteRoute('articles' + ((config.type === 'feed') ? '/feed' : ''), environment.api_url);
+		let apiUrl = '';
+		if(config) {
+			apiUrl = this.createCompleteRoute('articles' + ((config.type === 'feed') ? '/feed' : ''), environment.api_url);
+		}
+		else {
+			apiUrl = this.createCompleteRoute('articles', environment.api_url);
+		}
+			
 		const paramsx: any = { page: pageNumber, size: pageSize };
 		if (sort != null) {
 			paramsx.sort = sort.property + ',' + sort.direction;
@@ -116,14 +123,14 @@ export class ArticlesService {
 			search = 'firstName==' + filter + '* or ' + 'lastName==' + filter + '* or ' + 'company==' + filter + '*';
 		}
 		
-		let test = config.toString();
-
 		const paramsy = {};
 
+		if(config) {
 		Object.keys(config.filters)
 			.forEach((key) => {
 				paramsy[key] = config.filters[key];
 			});
+		}
 
 		let params = new HttpParams( {fromObject: paramsy} );
 

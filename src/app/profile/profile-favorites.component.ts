@@ -14,7 +14,7 @@ export class ProfileFavoritesComponent implements OnInit {
   ) {}
 
   profile: Profile;
-  favoritesConfig: ArticleListConfig = {
+  articlesListConfig: ArticleListConfig = {
     type: 'all',
     filters: {}
   };
@@ -23,7 +23,7 @@ export class ProfileFavoritesComponent implements OnInit {
     this.route.parent.data.subscribe(
       (data: {profile: Profile}) => {
         this.profile = data.profile;
-        this.favoritesConfig.filters.favorited = this.profile.userName;
+        this.articlesListConfig.filters.favorited = this.profile.userName;
       }
     );
   }

@@ -1,5 +1,5 @@
 import { Component, OnInit, AfterViewInit, ViewChild, ElementRef, ChangeDetectorRef, Input } from '@angular/core';
-import { MatTableDataSource, MatSort, MatPaginator } from '@angular/material';
+import { MatSort, MatPaginator } from '@angular/material';
 import { MatDialog, MatDialogRef } from '@angular/material';
 import { Article } from '../../core/models/article.model';
 import { ArticlesDataSource } from '../../core/services/articles.datasource';
@@ -29,25 +29,24 @@ export class ArticleListComponent implements OnInit, AfterViewInit {
 	dataSource: ArticlesDataSource;
 
 	query: ArticleListConfig;
-    results: Article[];
-    loading = false;
-    currentPage = 1;
-    totalPages: Array<number> = [1];
+	results: Article[];
+	loading = false;
+	currentPage = 1;
+	totalPages: Array<number> = [1];
 
 	@ViewChild(MatSort, { static: false }) sort: MatSort;
 	@ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
 	@ViewChild('input', { static: false }) input: ElementRef;
 
 	@Input() limit: number;
-	
+
 	@Input()
 	set config(config: ArticleListConfig) {
 
-		
 		if (config) {
-			           this.query = config;
-			           //this.currentPage = 1;
-			           this.loadArticlesPage();
+			this.query = config;
+			//this.currentPage = 1;
+			this.loadArticlesPage();
 		}
 
 	}
@@ -75,7 +74,7 @@ export class ArticleListComponent implements OnInit, AfterViewInit {
 
 		this.dataSource = new ArticlesDataSource(this.repository, this.errorService);
 
-		this.dataSource.loadArticles('', 'asc', 0, 6,this.query);
+		this.dataSource.loadArticles('', 'asc', 0, 6, this.query);
 
 		this.repository.getArticles()
 			.subscribe((data) => this.setArticles(data));
@@ -94,19 +93,19 @@ export class ArticleListComponent implements OnInit, AfterViewInit {
 			this.paginator.pageIndex = 0;
 			this.sortProperty = event.active;
 		});
-/*
-		fromEvent(this.input.nativeElement, 'keyup')
-			.pipe(
-				debounceTime(150),
-				distinctUntilChanged(),
-				tap(() => {
-					this.paginator.pageIndex = 0;
-
-					this.loadArticlesPage();
-				})
-			)
-			.subscribe();
-*/
+		/*
+				fromEvent(this.input.nativeElement, 'keyup')
+					.pipe(
+						debounceTime(150),
+						distinctUntilChanged(),
+						tap(() => {
+							this.paginator.pageIndex = 0;
+		
+							this.loadArticlesPage();
+						})
+					)
+					.subscribe();
+		*/
 		merge(this.sort.sortChange, this.paginator.page)
 			.pipe(
 				tap(() => this.loadArticlesPage())
@@ -153,15 +152,15 @@ export class ArticleListComponent implements OnInit, AfterViewInit {
 		}
 	*/
 	loadArticlesPage() {
-		if(this.dataSource) {
+		if (this.dataSource) {
 			this.dataSource.loadArticles(
 
-			//this.input.nativeElement.value,
-			this.sortProperty,
-			this.sort.direction,
-			this.paginator.pageIndex,
-			this.paginator.pageSize,
-			this.query);
+				//this.input.nativeElement.value,
+				this.sortProperty,
+				this.sort.direction,
+				this.paginator.pageIndex,
+				this.paginator.pageSize,
+				this.query);
 		}
 	}
 
