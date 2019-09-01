@@ -47,7 +47,10 @@ export class UsersService {
 
         private errorService: ErrorService,
 
+        private errorHandlerService: ErrorHandlerService,
+
         private accountEventService: AccountEventsService,
+
         private router: Router) { }
 
     public getData = (route: string) => {
@@ -100,7 +103,8 @@ export class UsersService {
 
         }).pipe(
             map(res => res),
- //           catchError(error => { this.errorHandlerService.handleError(error); return Observable.throw(error.statusText); })
+            catchError(error => { this.errorHandlerService.handleError(error); 
+                return Observable.throw(error.statusText); })
 
         );
     }
