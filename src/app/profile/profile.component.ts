@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { Router, ActivatedRoute, Event, NavigationEnd } from '@angular/router';
 
 import { Profile } from '../core';
 
@@ -7,23 +7,46 @@ import { User } from '../core/models/user';
 
 import { UsersService } from '../core/services/users.service';
 
-import { concatMap ,  tap } from 'rxjs/operators';
+import { concatMap, tap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-profile-page',
   templateUrl: './profile.component.html'
 })
 export class ProfileComponent implements OnInit {
+  public href = '';
   constructor(
+    private router: Router,
     private route: ActivatedRoute,
     private userService: UsersService
-  ) { }
+  ) {
+
+    this.href = window.location.pathname;
+
+    this.router.events.subscribe((event: Event) => {
+      if (event instanceof NavigationEnd) {
+        // console.log("this.href=" + this.href);
+        // console.log("this.router.url=" + this.router.url);
+        if (this.router.url.includes('/profile')&&(!this.router.url.includes('/favorites'))) {
+          if (this.href !== this.router.url) {
+            window.location.reload();
+          }
+        }
+      }
+    });
+
+  }
 
   profile: Profile;
   currentUser: User;
   isUser: boolean;
 
   ngOnInit() {
+    /*
+        this.router.events
+          .pipe(filter(value => value instanceof NavigationEnd))
+    
+    */
     this.route.data.pipe(
       concatMap((data: { profile: Profile }) => {
         this.profile = data.profile;
@@ -36,6 +59,11 @@ export class ProfileComponent implements OnInit {
         ));
       })
     ).subscribe();
+    /*
+        this.router.navigate(['/profile', this.currentUser.userName])
+        .then(() => {window.location.reload(); });
+    */
+
   }
 
   onToggleFollowing(following: boolean) {
