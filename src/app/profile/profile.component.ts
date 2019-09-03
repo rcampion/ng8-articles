@@ -42,11 +42,7 @@ export class ProfileComponent implements OnInit {
   isUser: boolean;
 
   ngOnInit() {
-    /*
-        this.router.events
-          .pipe(filter(value => value instanceof NavigationEnd))
-    
-    */
+
     this.route.data.pipe(
       concatMap((data: { profile: Profile }) => {
         this.profile = data.profile;
