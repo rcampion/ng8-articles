@@ -22,12 +22,12 @@ export class ProfileComponent implements OnInit {
   ) {
 
     this.href = window.location.pathname;
-    this.href = this.href.replace('/articles','');
+    this.href = this.href.replace('/articles', '');
     this.router.events.subscribe((event: Event) => {
       if (event instanceof NavigationEnd) {
-        console.log("this.href=" + this.href);
-        console.log("this.router.url=" + this.router.url);
-        if (this.router.url.includes('/profile')&&(!this.router.url.includes('/favorites'))) {
+        // console.log("this.href=" + this.href);
+        // console.log("this.router.url=" + this.router.url);
+        if (this.router.url.includes('/profile') && (!this.router.url.includes('/favorites'))) {
           if (this.href !== this.router.url) {
             window.location.reload();
           }
