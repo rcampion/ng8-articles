@@ -7,7 +7,7 @@ export const environment = {
   // api_url: 'http://www.zdslogic-development.com:8080/ng8-spring-server/api'
   // api_url: 'http://www.zdslogic-development.com:9090/spring-boot-docker-server/api'
   // api_url: 'https://www.zdslogic.com/ng8-spring-server/api'
-    api_url: 'http://localhost:8080/ng8-spring-server/api'
+    api_url: 'http://localhost:8080/ng9-spring-server/api'
 };
 
 /*
